@@ -1,6 +1,6 @@
 import { exec } from "./exec.ts";
-import { SshServer } from "./ssh.ts";
-import { parse } from "jsr:@std/yaml";
+import type { SshServer } from "./ssh.ts";
+import { parse } from "jsr:@std/yaml@0.224.1";
 
 export type KubeCluster = {
   name: string;
@@ -36,14 +36,14 @@ export type KubeConfig = {
   contexts: KubeContext[];
 };
 
-export function k3sGetToken(server: SshServer) {
+export function k3sGetToken(server: SshServer): Promise<string> {
   return server.execString("sudo cat /var/lib/rancher/k3s/server/node-token");
 }
 
 export function k3sInstallCmd(
   envVars: Record<string, string>,
   params: string[]
-) {
+): string {
   const en = Object.entries(envVars)
     .map(([k, v]) => `${k}=${v}`)
     .join(" ");
@@ -56,7 +56,7 @@ export async function k3sInstall(
   server: SshServer,
   role: "server" | "agent",
   master?: SshServer
-) {
+): Promise<void> {
   const env: Record<string, string> = {};
   if (master) {
     env.K3S_URL = `https://${master.hostname}:6443`;
@@ -72,7 +72,7 @@ export async function k3sInstall(
   await server.exec(k3sInstallCmd(env, params));
 }
 
-export async function k3sGetConfig(server: SshServer) {
+export async function k3sGetConfig(server: SshServer): Promise<KubeConfig> {
   const ymlRaw = await server.execString("sudo cat /etc/rancher/k3s/k3s.yaml");
   const config = parse(ymlRaw) as KubeConfig;
   return config;

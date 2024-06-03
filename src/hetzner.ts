@@ -15,7 +15,7 @@ export type HcloudServer = {
   };
 };
 
-export async function hcloudServerList() {
+export async function hcloudServerList(): Promise<HcloudServer[]> {
   const output = await execString("hcloud", [
     "server",
     "list",

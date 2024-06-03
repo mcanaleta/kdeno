@@ -3,7 +3,7 @@
  * @param url - The URL to read data from using the op command.
  * @returns - A promise that resolves to the read data as a string.
  */
-export async function opReadString(url: string) {
+export async function opReadString(url: string): Promise<string> {
   const cmd = new Deno.Command("op", {
     args: ["read", url],
   });

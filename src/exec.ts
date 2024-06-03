@@ -1,4 +1,7 @@
-export async function execOutput(name: string, args: string[]) {
+export async function execOutput(
+  name: string,
+  args: string[]
+): Promise<Uint8Array> {
   const cmd = new Deno.Command(name, {
     args: args,
   });
@@ -6,7 +9,10 @@ export async function execOutput(name: string, args: string[]) {
   return output.stdout;
 }
 
-export async function execString(name: string, args: string[]) {
+export async function execString(
+  name: string,
+  args: string[]
+): Promise<string> {
   const output = await execOutput(name, args);
   return new TextDecoder().decode(output);
 }
