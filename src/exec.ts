@@ -22,6 +22,28 @@ export async function exec(name: string, args: string[]) {
     args: args,
     stdin: "inherit",
     stdout: "inherit",
+    stderr: "inherit",
   });
-  await cmd.output();
+  const out = await cmd.output();
+  if (!out.success) {
+    throw new Error(`Exit status: ${out.code}`);
+  }
+}
+
+export async function execCaptureString(
+  cmd: Deno.Command,
+  check: boolean = true
+): Promise<string> {
+  const output = await cmd.output();
+  if (check && !output.success) {
+    throw new Error(`Exit status: ${output.code}`);
+  }
+  return new TextDecoder().decode(output.stdout);
+}
+
+export async function execCheck(cmd: Deno.Command) {
+  const output = await cmd.output();
+  if (!output.success) {
+    throw new Error(`Exit status: ${output.code}`);
+  }
 }

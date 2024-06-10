@@ -11,3 +11,6 @@ import * as h from "https://raw.githubusercontent.com/mcanaleta/kdeno/main/src/h
 const servers = await h.hcloudServerList();
 console.log(servers);
 ```
+
+deno check src/
+deno lint src/mod.ts
